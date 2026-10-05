@@ -27,13 +27,17 @@ class ManualSpawn:
 def make_session(*replies, seed=7):
     log = MemoryLog()
     spawn = ManualSpawn()
-    session = GameSession(Interpreter(FakeClient(*replies)), log, lambda: seed, spawn=spawn, model="fake")
+    session = GameSession(Interpreter(FakeClient(*replies)), log, lambda: seed, spawn=spawn, model="fake",
+                          plan_display_seconds=0)
     return session, log, spawn
 
 
 def finish(session, spawn):
+    """해석을 끝내고, 계획이 수락됐으면 화면 표시를 거쳐 실행까지 진행한다."""
     spawn.run()
     assert session.poll()
+    session.mark_displayed()
+    session.poll()
 
 
 def test_turn_runs_and_logs_everything():
@@ -125,11 +129,78 @@ def test_real_thread_keeps_state_changes_on_poll_thread():
             time.sleep(0.05)
             return Interpreter(FakeClient(reply(step("guard")))).interpret(sentence, state)
 
-    session = GameSession(Slow(), MemoryLog(), lambda: 3)
+    session = GameSession(Slow(), MemoryLog(), lambda: 3, plan_display_seconds=0)
     session.submit("방어")
     assert session.state.turn == 1  # 해석 중에는 상태가 바뀌지 않는다
     deadline = time.time() + 2
-    while not session.poll():
+    while session.state.turn == 1:
         assert time.time() < deadline
+        session.poll()
+        session.mark_displayed()
         time.sleep(0.01)
     assert session.state.turn == 2 and threading.current_thread() is threading.main_thread()
+
+
+# ---- 실행 전 계획 표시 ----
+
+def test_plan_is_shown_before_execution_without_rolling_dice():
+    session, log, spawn = make_session(reply(step("attack", target=target("goblin")), step("attack", target=target("goblin"))))
+    session.state.player.pos = (6, 2)
+    before = session.state.copy()
+    rng_state = session.rng.getstate()
+    session.submit("고블린을 베고 또 벤다")
+    spawn.run()
+    assert session.poll()
+    # 계획 줄은 보이지만 아직 아무것도 실행되지 않았다
+    assert session.plan_line == "계획 4/4 AP: ① 베기 → 고블린 (2, 명중 65%) ② 베기 → 고블린 (2, 명중 65%)"
+    assert session.phase == "planned" and session.busy
+    assert session.state == before and session.rng.getstate() == rng_state
+    assert not session.poll()  # 화면에 그려지기 전에는 실행하지 않는다
+    assert session.state == before
+    session.mark_displayed()
+    assert session.poll()
+    assert session.state.turn == 2 and session.phase == "idle"
+    assert not session.poll()  # 다시 실행되지 않는다
+    turns = [r for r in log.records if r["type"] == "turn"]
+    assert len(turns) == 1 and turns[0]["events"] and turns[0]["validation"]["accepted"]
+
+
+def test_plan_waits_display_time():
+    session, log, spawn = make_session(reply(step("guard")))
+    session.plan_display_seconds = 60
+    session.submit("방어")
+    spawn.run()
+    session.poll()
+    session.mark_displayed()
+    assert not session.poll() and session.state.turn == 1
+
+
+def test_submit_while_plan_is_shown_is_dropped():
+    session, log, spawn = make_session(reply(step("guard")), reply(step("guard")))
+    session.submit("방어")
+    spawn.run()
+    session.poll()
+    assert session.submit("방어") == "busy" and not spawn.jobs
+    session.mark_displayed()
+    session.poll()
+    assert session.state.turn == 2 and len([r for r in log.records if r["type"] == "turn"]) == 1
+
+
+def test_restart_discards_shown_plan():
+    session, log, spawn = make_session(reply(step("use_item", item="potion")))
+    session.submit("물약 마셔")
+    spawn.run()
+    session.poll()
+    session.submit("다시 시작")
+    session.mark_displayed()
+    assert not session.poll()
+    assert session.state.potions == 1 and session.state.turn == 1 and not session.busy
+
+
+def test_rejected_plan_is_logged_immediately_and_not_executed():
+    session, log, spawn = make_session(reply(step("attack", target=target("goblin"))))
+    session.submit("고블린을 베어")
+    spawn.run()
+    session.poll()
+    assert session.plan_line.startswith("거부:") and not session.busy
+    assert log.records[-1]["validation"]["accepted"] is False and log.records[-1]["events"] == []

@@ -241,7 +241,11 @@ def end_turn(state: GameState) -> None:
 
 def play_turn(state: GameState, plan: Plan, rng: random.Random) -> TurnResult:
     """계획 검증 → 실행 → 적 턴 → 턴 끝. 거부되면 상태·AP·턴·난수를 바꾸지 않는다."""
-    validation = validate_plan(state, plan)
+    return run_validated(state, plan, validate_plan(state, plan), rng)
+
+
+def run_validated(state: GameState, plan: Plan, validation: Validation, rng: random.Random) -> TurnResult:
+    """이미 검증한 계획을 실행 → 적 턴 → 턴 끝까지 처리한다. 검증 뒤 상태가 바뀌지 않았을 때만 부른다."""
     result = TurnResult(validation)
     if not validation.accepted or state.outcome is not None:
         return result

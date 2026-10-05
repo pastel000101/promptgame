@@ -11,7 +11,7 @@ WINDOW_SIZE = (980, 760)
 TILE = 50
 GRID_ORIGIN = (16, 16)
 PANEL_X = GRID_ORIGIN[0] + TILE * level.WIDTH + 24
-LOG_LINES = 10
+LOG_LINES = 10  # 계획 줄이 길면 그만큼 줄어든다
 
 BG = (24, 26, 32)
 TEXT = (230, 230, 230)
@@ -131,7 +131,7 @@ def draw(surface: pygame.Surface, session, text_input, fonts: Fonts) -> None:
     y = GRID_ORIGIN[1] + TILE * level.HEIGHT + 12
     plan = session.plan_line or "계획: (아직 없음)"
     color = REJECT if plan.startswith(("거부", "다시 입력")) else ACCENT
-    for line in wrap(fonts.normal, plan, width)[:2]:
+    for line in wrap(fonts.normal, plan, width):  # 단계·비용·명중률·거부 사유를 자르지 않는다
         y += _blit(surface, fonts.normal, line, (16, y), color)
 
     # 기록 창: 최근 줄
@@ -141,7 +141,9 @@ def draw(surface: pygame.Surface, session, text_input, fonts: Fonts) -> None:
     wrapped: list[str] = []
     for entry in session.history:
         wrapped.extend(wrap(fonts.small, entry, width))
-    for line in wrapped[-LOG_LINES:]:
+    box_top = WINDOW_SIZE[1] - 56 - 24
+    fit = max(0, min(LOG_LINES, (box_top - y) // fonts.small.get_linesize()))
+    for line in (wrapped[-fit:] if fit else []):
         color = DIM if line.startswith("적 턴") else TEXT
         y += _blit(surface, fonts.small, line, (16, y), color)
 
@@ -160,7 +162,12 @@ def draw(surface: pygame.Surface, session, text_input, fonts: Fonts) -> None:
         cx += comp.get_width()
     pygame.draw.line(surface, TEXT, (cx + 1, ty), (cx + 1, ty + fonts.normal.get_height()))
     elapsed = session.elapsed()
-    status = f"AI 해석 중… {elapsed:.1f}초" if elapsed is not None else session.notice
+    if elapsed is not None:
+        status = f"AI 해석 중… {elapsed:.1f}초"
+    elif session.phase == "planned":
+        status = "계획을 확인하세요. 잠시 뒤 자동으로 실행해요"
+    else:
+        status = session.notice
     if status:
         _blit(surface, fonts.small, status, (16, box.y - 20), ACCENT)
 

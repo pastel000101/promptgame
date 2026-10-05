@@ -93,7 +93,8 @@ class Instant:
 
 
 def session_with(*replies, seed=5):
-    return GameSession(Interpreter(FakeClient(*replies)), MemoryLog(), lambda: seed, spawn=Instant(), model="fake")
+    return GameSession(Interpreter(FakeClient(*replies)), MemoryLog(), lambda: seed, spawn=Instant(), model="fake",
+                       plan_display_seconds=0)
 
 
 def draw(screen, session, ti=None):
@@ -172,3 +173,39 @@ def test_main_runs_a_few_frames(monkeypatch, tmp_path):
     monkeypatch.setenv("PROMPTGAME_SEED", "3")
     assert main_module.main(max_frames=3) == 0
     assert list(tmp_path.glob("turns-*.jsonl"))
+
+
+@pytest.fixture
+def fresh_screen():
+    pygame.init()  # 앞선 main 실행 테스트가 pygame을 종료했을 수 있다
+    yield pygame.display.set_mode(render.WINDOW_SIZE)
+
+
+def test_long_plan_and_rejection_lines_are_not_cut(fresh_screen, monkeypatch):
+    drawn = []
+    original = render._blit
+
+    def capture(surface, font, text, pos, color=render.TEXT):
+        drawn.append(text)
+        return original(surface, font, text, pos, color)
+
+    monkeypatch.setattr(render, "_blit", capture)
+    s = session_with()
+    s.plan_line = ("거부: AP 9 필요 (① 머리 조준 강타 → 오크 4, ② 머리 조준 강타 → 고블린 4, ③ 단검 투척 → 고블린 1), "
+                   "한 턴에 4까지예요. 'n칸 다가가'처럼 칸 수를 적으면 이번 턴에 3칸까지 갈 수 있어요." * 2)
+    fonts = render.Fonts()
+    render.draw(fresh_screen, s, TextInput(), fonts)
+    lines = render.wrap(fonts.normal, s.plan_line, render.WINDOW_SIZE[0] - 32)
+    assert len(lines) > 2
+    start = drawn.index(lines[0])
+    assert drawn[start:start + len(lines)] == lines
+
+
+def test_app_marks_plan_displayed_then_executes(fresh_screen):
+    s = session_with(reply(step("guard")))
+    app = App(s)
+    app.screen, app.fonts, app.running = fresh_screen, render.Fonts(), True
+    app.frame([committed("방어"), key(pygame.K_RETURN)])  # 해석 → 계획 표시
+    assert s.phase == "planned" and s.state.turn == 1
+    app.frame([])  # 표시된 뒤 다음 프레임에서 자동 실행
+    assert s.state.turn == 2 and s.phase == "idle"

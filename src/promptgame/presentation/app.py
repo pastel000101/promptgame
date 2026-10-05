@@ -43,6 +43,7 @@ class App:
         self.session.poll()
         render.draw(self.screen, self.session, self.input, self.fonts)
         pygame.display.flip()
+        self.session.mark_displayed()  # 계획 줄을 그린 뒤에만 자동 실행 시간을 잰다
 
     def run(self, max_frames: int | None = None) -> None:
         self.open()
