@@ -34,6 +34,9 @@ class Unit:
     def alive(self) -> bool:
         return self.hp > 0
 
+    def to_dict(self) -> dict:
+        return {"id": self.uid, "pos": list(self.pos), "hp": self.hp, "statuses": dict(self.statuses)}
+
 
 @dataclass
 class GameState:
@@ -53,6 +56,22 @@ class GameState:
 
     def copy(self) -> GameState:
         return copy.deepcopy(self)
+
+    def to_dict(self) -> dict:
+        return {
+            "turn": self.turn,
+            "ap": self.ap,
+            "mana": self.mana,
+            "potions": self.potions,
+            "knives": self.knives,
+            "whirlwind_cooldown": self.whirlwind_cooldown,
+            "dashed": self.dashed,
+            "guarding": self.guarding,
+            "last_attacked": self.last_attacked,
+            "outcome": self.outcome,
+            "player": self.player.to_dict(),
+            "enemies": [e.to_dict() for e in self.enemies],
+        }
 
     # 지형
     def terrain(self, pos: Pos) -> str:
