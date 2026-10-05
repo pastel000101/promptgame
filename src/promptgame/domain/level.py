@@ -35,6 +35,7 @@ PLAYER_STATS = {
     "armor": 1,
     "weapon_damage": 5,
 }
+PLAYER_EQUIPMENT = {"weapon": "장검", "armor": "가죽 갑옷"}
 PLAYER_POTIONS = 1
 PLAYER_KNIVES = 2
 
