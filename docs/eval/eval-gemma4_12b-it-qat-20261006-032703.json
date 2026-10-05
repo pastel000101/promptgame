@@ -1,0 +1,1738 @@
+{
+  "measured_at": "2026-10-06T03:27:03+0900",
+  "model": "gemma4:12b-it-qat",
+  "ollama_url": "http://127.0.0.1:11434",
+  "timeout_s": 15.0,
+  "method": "모델 미리 적재 후 문장마다 1회, 재시도 포함 응답 시간, 정규화 계획이 기대 후보 중 하나와 같으면 정답",
+  "preload_ms": 293.8,
+  "total": 30,
+  "correct": 29,
+  "by_category": {
+    "single": {
+      "correct": 10,
+      "total": 10
+    },
+    "compound": {
+      "correct": 10,
+      "total": 10
+    },
+    "target": {
+      "correct": 9,
+      "total": 10
+    }
+  },
+  "examples_correct": "6/6",
+  "median_ms": 1878.2,
+  "p95_ms": 3221.3,
+  "retries": 0,
+  "failures": 0,
+  "results": [
+    {
+      "id": "S01",
+      "category": "single",
+      "example": null,
+      "sentence": "남쪽으로 두 칸 가",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1946.1,
+      "got": {
+        "steps": [
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": null,
+              "away_from": null,
+              "direction": "S",
+              "cells": 2
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": null,
+                "away_from": null,
+                "direction": "S",
+                "cells": 2
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"move\", \"target\": null, \"move\": {\"toward\": null, \"away_from\": null, \"direction\": \"S\", \"cells\": 2}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S02",
+      "category": "single",
+      "example": null,
+      "sentence": "방어 자세를 잡아",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1469.0,
+      "got": {
+        "steps": [
+          {
+            "act": "guard",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "guard",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"guard\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S03",
+      "category": "single",
+      "example": null,
+      "sentence": "물약을 마셔",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1524.1,
+      "got": {
+        "steps": [
+          {
+            "act": "use_item",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": "potion"
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "potion"
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"use_item\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"potion\"}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S04",
+      "category": "single",
+      "example": null,
+      "sentence": "고블린을 베어",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1647.3,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S05",
+      "category": "single",
+      "example": "E2",
+      "sentence": "화염구로 오크를 태워.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1665.2,
+      "got": {
+        "steps": [
+          {
+            "act": "cast",
+            "target": {
+              "kind": "orc",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": "fireball",
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "cast",
+              "target": {
+                "kind": "orc",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": "fireball",
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"cast\", \"target\": {\"kind\": \"orc\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": \"fireball\", \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S06",
+      "category": "single",
+      "example": null,
+      "sentence": "고블린에게 단검을 던져",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1777.4,
+      "got": {
+        "steps": [
+          {
+            "act": "use_item",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": "throwing_knife"
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "throwing_knife"
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"use_item\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"throwing_knife\"}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S07",
+      "category": "single",
+      "example": null,
+      "sentence": "돌려베기로 주변을 쓸어버려",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1493.1,
+      "got": {
+        "steps": [
+          {
+            "act": "skill",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": "whirlwind",
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "skill",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": "whirlwind",
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"skill\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": \"whirlwind\", \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S08",
+      "category": "single",
+      "example": null,
+      "sentence": "이번 턴은 그냥 기다린다",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1432.5,
+      "got": {
+        "steps": [
+          {
+            "act": "wait",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "wait",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"wait\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S09",
+      "category": "single",
+      "example": null,
+      "sentence": "오크 옆으로 걸어가",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2095.6,
+      "got": {
+        "steps": [
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": {
+                "kind": "orc",
+                "relation": null
+              },
+              "away_from": null,
+              "direction": null,
+              "cells": null
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": {
+                  "kind": "orc",
+                  "relation": null
+                },
+                "away_from": null,
+                "direction": null,
+                "cells": null
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"move\", \"target\": null, \"move\": {\"toward\": {\"kind\": \"orc\", \"relation\": null}, \"away_from\": null, \"direction\": null, \"cells\": null}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "S10",
+      "category": "single",
+      "example": null,
+      "sentence": "동쪽으로 한 칸 이동",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1932.5,
+      "got": {
+        "steps": [
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": null,
+              "away_from": null,
+              "direction": "E",
+              "cells": 1
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": null,
+                "away_from": null,
+                "direction": "E",
+                "cells": 1
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"move\", \"target\": null, \"move\": {\"toward\": null, \"away_from\": null, \"direction\": \"E\", \"cells\": 1}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C01",
+      "category": "compound",
+      "example": "E1",
+      "sentence": "신속하게 다가가서 녀석의 머리를 벤다.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 3143.1,
+      "got": {
+        "steps": [
+          {
+            "act": "dash",
+            "target": null,
+            "move": {
+              "toward": {
+                "kind": "enemy",
+                "relation": null
+              },
+              "away_from": null,
+              "direction": null,
+              "cells": null
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "enemy",
+              "relation": null
+            },
+            "move": null,
+            "aim": "head",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "dash",
+              "target": null,
+              "move": {
+                "toward": {
+                  "kind": "enemy",
+                  "relation": null
+                },
+                "away_from": null,
+                "direction": null,
+                "cells": null
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "attack",
+              "target": {
+                "kind": "enemy",
+                "relation": null
+              },
+              "move": null,
+              "aim": "head",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"dash\", \"target\": null, \"move\": {\"toward\": {\"kind\": \"enemy\", \"relation\": null}, \"away_from\": null, \"direction\": null, \"cells\": null}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"enemy\", \"relation\": null}, \"move\": null, \"aim\": \"head\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C02",
+      "category": "compound",
+      "example": "E3",
+      "sentence": "물약 마시고 뒤로 물러나.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 3001.0,
+      "got": {
+        "steps": [
+          {
+            "act": "use_item",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": "potion"
+          },
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": null,
+              "away_from": {
+                "kind": "enemy",
+                "relation": null
+              },
+              "direction": null,
+              "cells": null
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "potion"
+            },
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": null,
+                "away_from": {
+                  "kind": "enemy",
+                  "relation": null
+                },
+                "direction": null,
+                "cells": null
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        },
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "potion"
+            },
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": null,
+                "away_from": {
+                  "kind": "enemy",
+                  "relation": null
+                },
+                "direction": null,
+                "cells": 1
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"use_item\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"potion\"}, {\"act\": \"move\", \"target\": null, \"move\": {\"toward\": null, \"away_from\": {\"kind\": \"enemy\", \"relation\": null}, \"direction\": null, \"cells\": null}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C03",
+      "category": "compound",
+      "example": "E4",
+      "sentence": "진흙을 가로질러 돌진해서 고블린을 벤다.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 3197.6,
+      "got": {
+        "steps": [
+          {
+            "act": "dash",
+            "target": null,
+            "move": {
+              "toward": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "away_from": null,
+              "direction": null,
+              "cells": null
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "dash",
+              "target": null,
+              "move": {
+                "toward": {
+                  "kind": "goblin",
+                  "relation": null
+                },
+                "away_from": null,
+                "direction": null,
+                "cells": null
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"dash\", \"target\": null, \"move\": {\"toward\": {\"kind\": \"goblin\", \"relation\": null}, \"away_from\": null, \"direction\": null, \"cells\": null}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C04",
+      "category": "compound",
+      "example": "E5",
+      "sentence": "오크 머리를 힘껏 내려치고 고블린도 벤다.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2692.6,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "orc",
+              "relation": null
+            },
+            "move": null,
+            "aim": "head",
+            "power": "strong",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "orc",
+                "relation": null
+              },
+              "move": null,
+              "aim": "head",
+              "power": "strong",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"orc\", \"relation\": null}, \"move\": null, \"aim\": \"head\", \"power\": \"strong\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C05",
+      "category": "compound",
+      "example": "E6",
+      "sentence": "비틀거리는 고블린을 베고 또 벤다.",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2851.1,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": "staggered"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": "staggered"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": "staggered"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": "staggered"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": \"staggered\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": \"staggered\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C06",
+      "category": "compound",
+      "example": null,
+      "sentence": "오크 다리를 노려 단검을 던지고 방어 자세를 잡아",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2577.4,
+      "got": {
+        "steps": [
+          {
+            "act": "use_item",
+            "target": {
+              "kind": "orc",
+              "relation": null
+            },
+            "move": null,
+            "aim": "leg",
+            "power": "normal",
+            "ability": null,
+            "item": "throwing_knife"
+          },
+          {
+            "act": "guard",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": {
+                "kind": "orc",
+                "relation": null
+              },
+              "move": null,
+              "aim": "leg",
+              "power": "normal",
+              "ability": null,
+              "item": "throwing_knife"
+            },
+            {
+              "act": "guard",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"use_item\", \"target\": {\"kind\": \"orc\", \"relation\": null}, \"move\": null, \"aim\": \"leg\", \"power\": \"normal\", \"ability\": null, \"item\": \"throwing_knife\"}, {\"act\": \"guard\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C07",
+      "category": "compound",
+      "example": null,
+      "sentence": "고블린 팔을 벤 다음 물약을 마셔",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2581.2,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "arm",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "use_item",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": "potion"
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "arm",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "use_item",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "potion"
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"arm\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"use_item\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"potion\"}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C08",
+      "category": "compound",
+      "example": null,
+      "sentence": "북쪽으로 두 칸 달려가서 고블린을 힘껏 벤다",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 3009.4,
+      "got": {
+        "steps": [
+          {
+            "act": "dash",
+            "target": null,
+            "move": {
+              "toward": null,
+              "away_from": null,
+              "direction": "N",
+              "cells": 2
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "goblin",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "strong",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "dash",
+              "target": null,
+              "move": {
+                "toward": null,
+                "away_from": null,
+                "direction": "N",
+                "cells": 2
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "attack",
+              "target": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "strong",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"dash\", \"target\": null, \"move\": {\"toward\": null, \"away_from\": null, \"direction\": \"N\", \"cells\": 2}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"strong\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C09",
+      "category": "compound",
+      "example": null,
+      "sentence": "고블린에게 세 칸 다가가서 방어해",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2966.3,
+      "got": {
+        "steps": [
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "away_from": null,
+              "direction": null,
+              "cells": 3
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "guard",
+            "target": null,
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": {
+                  "kind": "goblin",
+                  "relation": null
+                },
+                "away_from": null,
+                "direction": null,
+                "cells": 3
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            },
+            {
+              "act": "guard",
+              "target": null,
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"move\", \"target\": null, \"move\": {\"toward\": {\"kind\": \"goblin\", \"relation\": null}, \"away_from\": null, \"direction\": null, \"cells\": 3}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"guard\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "C10",
+      "category": "compound",
+      "example": null,
+      "sentence": "화염구를 오크에게 쏘고 고블린 쪽으로 두 칸 걸어가",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 3221.3,
+      "got": {
+        "steps": [
+          {
+            "act": "cast",
+            "target": {
+              "kind": "orc",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": "fireball",
+            "item": null
+          },
+          {
+            "act": "move",
+            "target": null,
+            "move": {
+              "toward": {
+                "kind": "goblin",
+                "relation": null
+              },
+              "away_from": null,
+              "direction": null,
+              "cells": 2
+            },
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "cast",
+              "target": {
+                "kind": "orc",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": "fireball",
+              "item": null
+            },
+            {
+              "act": "move",
+              "target": null,
+              "move": {
+                "toward": {
+                  "kind": "goblin",
+                  "relation": null
+                },
+                "away_from": null,
+                "direction": null,
+                "cells": 2
+              },
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"cast\", \"target\": {\"kind\": \"orc\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": \"fireball\", \"item\": null}, {\"act\": \"move\", \"target\": null, \"move\": {\"toward\": {\"kind\": \"goblin\", \"relation\": null}, \"away_from\": null, \"direction\": null, \"cells\": 2}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T01",
+      "category": "target",
+      "example": null,
+      "sentence": "가장 가까운 적에게 화염구를 던져",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1708.1,
+      "got": {
+        "steps": [
+          {
+            "act": "cast",
+            "target": {
+              "kind": "enemy",
+              "relation": "nearest"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": "fireball",
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "cast",
+              "target": {
+                "kind": "enemy",
+                "relation": "nearest"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": "fireball",
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"cast\", \"target\": {\"kind\": \"enemy\", \"relation\": \"nearest\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": \"fireball\", \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T02",
+      "category": "target",
+      "example": null,
+      "sentence": "불타는 놈을 벤다",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1655.3,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "enemy",
+              "relation": "burning"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "enemy",
+                "relation": "burning"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"enemy\", \"relation\": \"burning\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T03",
+      "category": "target",
+      "example": null,
+      "sentence": "방금 때린 녀석을 다시 벤다",
+      "correct": false,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 2797.5,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "orc",
+              "relation": "last_attacked"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          },
+          {
+            "act": "attack",
+            "target": {
+              "kind": "orc",
+              "relation": "last_attacked"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "enemy",
+                "relation": "last_attacked"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"orc\", \"relation\": \"last_attacked\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"orc\", \"relation\": \"last_attacked\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T04",
+      "category": "target",
+      "example": null,
+      "sentence": "체력이 적은 적에게 단검을 던져",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1823.8,
+      "got": {
+        "steps": [
+          {
+            "act": "use_item",
+            "target": {
+              "kind": "enemy",
+              "relation": "lowest_hp"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": "throwing_knife"
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "use_item",
+              "target": {
+                "kind": "enemy",
+                "relation": "lowest_hp"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": "throwing_knife"
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"use_item\", \"target\": {\"kind\": \"enemy\", \"relation\": \"lowest_hp\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"throwing_knife\"}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T05",
+      "category": "target",
+      "example": null,
+      "sentence": "녀석을 베어",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1602.0,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "enemy",
+              "relation": null
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "enemy",
+                "relation": null
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"enemy\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T06",
+      "category": "target",
+      "example": null,
+      "sentence": "북쪽에 있는 적을 공격해",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 1640.3,
+      "got": {
+        "steps": [
+          {
+            "act": "attack",
+            "target": {
+              "kind": "enemy",
+              "relation": "north"
+            },
+            "move": null,
+            "aim": "none",
+            "power": "normal",
+            "ability": null,
+            "item": null
+          }
+        ],
+        "clarify": null
+      },
+      "expected": [
+        {
+          "steps": [
+            {
+              "act": "attack",
+              "target": {
+                "kind": "enemy",
+                "relation": "north"
+              },
+              "move": null,
+              "aim": "none",
+              "power": "normal",
+              "ability": null,
+              "item": null
+            }
+          ],
+          "clarify": null
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"attack\", \"target\": {\"kind\": \"enemy\", \"relation\": \"north\"}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}], \"clarify\": null}"
+      ]
+    },
+    {
+      "id": "T07",
+      "category": "target",
+      "example": null,
+      "sentence": "안녕, 오늘 날씨 어때?",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 627.6,
+      "got": {
+        "steps": [],
+        "clarify": "unrelated"
+      },
+      "expected": [
+        {
+          "steps": [],
+          "clarify": "unrelated"
+        }
+      ],
+      "raw": [
+        "{\"steps\": [], \"clarify\": \"unrelated\"}"
+      ]
+    },
+    {
+      "id": "T08",
+      "category": "target",
+      "example": null,
+      "sentence": "음... 그거 해",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 559.5,
+      "got": {
+        "steps": [],
+        "clarify": "ambiguous"
+      },
+      "expected": [
+        {
+          "steps": [],
+          "clarify": "ambiguous"
+        }
+      ],
+      "raw": [
+        "{\"steps\": [], \"clarify\": \"ambiguous\"}"
+      ]
+    },
+    {
+      "id": "T09",
+      "category": "target",
+      "example": null,
+      "sentence": "북쪽으로 가서 고블린을 베고 물약을 마시고 단검을 던진 다음 방어해",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 4004.1,
+      "got": {
+        "steps": [],
+        "clarify": "too_many_steps"
+      },
+      "expected": [
+        {
+          "steps": [],
+          "clarify": "too_many_steps"
+        }
+      ],
+      "raw": [
+        "{\"steps\": [{\"act\": \"move\", \"target\": null, \"move\": {\"toward\": null, \"away_from\": null, \"direction\": \"N\", \"cells\": null}, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"attack\", \"target\": {\"kind\": \"goblin\", \"relation\": null}, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": null}, {\"act\": \"use_item\", \"target\": null, \"move\": null, \"aim\": \"none\", \"power\": \"normal\", \"ability\": null, \"item\": \"potion\"}], \"clarify\": \"too_many_steps\"}"
+      ]
+    },
+    {
+      "id": "T10",
+      "category": "target",
+      "example": null,
+      "sentence": "노래를 불러",
+      "correct": true,
+      "source": "llm",
+      "failure": null,
+      "attempts": 1,
+      "elapsed_ms": 620.0,
+      "got": {
+        "steps": [],
+        "clarify": "unrelated"
+      },
+      "expected": [
+        {
+          "steps": [],
+          "clarify": "unrelated"
+        },
+        {
+          "steps": [],
+          "clarify": "ambiguous"
+        }
+      ],
+      "raw": [
+        "{\"steps\": [], \"clarify\": \"unrelated\"}"
+      ]
+    }
+  ]
+}
