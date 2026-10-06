@@ -38,6 +38,9 @@ def finish(session, spawn):
     assert session.poll()
     session.mark_displayed()
     session.poll()
+    if session.phase == "animating":
+        session.take_turn_events()
+        session.animation_done()
 
 
 def test_turn_runs_and_logs_everything():
@@ -138,6 +141,7 @@ def test_real_thread_keeps_state_changes_on_poll_thread():
         session.poll()
         session.mark_displayed()
         time.sleep(0.01)
+    session.animation_done()
     assert session.state.turn == 2 and threading.current_thread() is threading.main_thread()
 
 
@@ -159,7 +163,12 @@ def test_plan_is_shown_before_execution_without_rolling_dice():
     assert session.state == before
     session.mark_displayed()
     assert session.poll()
-    assert session.state.turn == 2 and session.phase == "idle"
+    assert session.state.turn == 2 and session.phase == "animating"  # 판정은 끝났고 화면이 연출을 재생한다
+    assert session.submit("대기") == "busy"
+    events, validation = session.take_turn_events()
+    assert events and validation.accepted and session.take_turn_events() is None
+    session.animation_done()
+    assert session.phase == "idle"
     assert not session.poll()  # 다시 실행되지 않는다
     turns = [r for r in log.records if r["type"] == "turn"]
     assert len(turns) == 1 and turns[0]["events"] and turns[0]["validation"]["accepted"]

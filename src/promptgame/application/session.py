@@ -52,6 +52,7 @@ class GameSession:
         spawn: Callable[[Callable[[], None]], None] = _thread_spawn,
         model: str = "",
         plan_display_seconds: float = PLAN_DISPLAY_SECONDS,
+        animate: bool = True,
     ):
         self.interpreter = interpreter
         self.log = log
@@ -60,6 +61,9 @@ class GameSession:
         self.model = model
         self.plan_display_seconds = plan_display_seconds
         self._planned: _Planned | None = None
+        self.animate = animate
+        self._turn_events = None  # 실행이 끝나 연출을 기다리는 (이벤트, 검증 결과)
+        self._animating = False
         self.history: deque[str] = deque(maxlen=HISTORY_LIMIT)
         self._results: queue.Queue = queue.Queue()
         self._pending: tuple[int, int] | None = None
@@ -79,6 +83,8 @@ class GameSession:
         self._pending = None
         self._busy_since = None
         self._planned = None
+        self._turn_events = None
+        self._animating = False
         self.plan_line = ""
         self.notice = ""
         self.history.clear()
@@ -88,8 +94,8 @@ class GameSession:
 
     @property
     def busy(self) -> bool:
-        """해석 중이거나 보여 준 계획을 아직 실행하지 않았으면 참. 이때 새 문장은 받지 않는다."""
-        return self._pending is not None or self._planned is not None
+        """해석 중, 계획 표시 중, 연출 중이면 참. 이때 새 문장은 받지 않는다."""
+        return self._pending is not None or self._planned is not None or self._animating
 
     @property
     def phase(self) -> str:
@@ -97,7 +103,23 @@ class GameSession:
             return "interpreting"
         if self._planned is not None:
             return "planned"
+        if self._animating:
+            return "animating"
         return "idle"
+
+    def take_turn_events(self):
+        """실행이 끝난 턴의 (이벤트, 검증 결과)를 한 번만 돌려준다. 연출이 끝나면 animation_done()을 부른다."""
+        if self._turn_events is None:
+            return None
+        events, self._turn_events = self._turn_events, None
+        return events
+
+    def animation_done(self) -> None:
+        self._animating = False
+
+    def current_validation(self):
+        """계획 표시 단계에서 보여 줄 검증 결과. 없으면 None."""
+        return self._planned.validation if self._planned is not None else None
 
     def mark_displayed(self) -> None:
         """화면이 현재 계획 줄을 그린 뒤 부른다. 이때부터 표시 시간을 잰다."""
@@ -193,6 +215,10 @@ class GameSession:
         self.history.extend(e.text for e in result.events)
         planned.record["events"] = [{"text": e.text, **e.data} for e in result.events]
         self._write(planned.record)
+        if self.animate:
+            # 판정은 끝났다. 화면이 이벤트를 순서대로 보여 줄 때까지 새 입력을 받지 않는다.
+            self._turn_events = (result.events, planned.validation)
+            self._animating = True
         return True
 
     def _write(self, record: dict) -> None:

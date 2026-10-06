@@ -9,7 +9,11 @@ dependencies = ["pygame>=2.6,<2.7"]
 promptgame = "promptgame.main:main"
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = [
+    "numpy>=2.5.3",
+    "pillow>=12.3.0",
+    "pytest>=8",
+]
 
 [build-system]
 requires = ["hatchling"]

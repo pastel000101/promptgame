@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import random
 import threading
 
@@ -32,8 +33,9 @@ def main(max_frames: int | None = None) -> int:
     config = load_config()
     session, client, log = build(config)
     threading.Thread(target=client.preload, daemon=True).start()
+    debug = os.environ.get("PROMPTGAME_DEBUG", "").strip() == "1"
     try:
-        App(session).run(max_frames=max_frames)
+        App(session, debug=debug).run(max_frames=max_frames)
     finally:
         log.close()
         print(f"[promptgame] 기록 파일: {log.path or '없음'}")

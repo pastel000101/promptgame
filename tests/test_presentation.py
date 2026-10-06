@@ -1,13 +1,14 @@
-"""화면·입력: SDL 이벤트 순서 재현과 창 없는 그리기 (dummy 드라이버)."""
+"""화면·입력: SDL 이벤트 순서 재현과 창 없는 그리기 (dummy 드라이버). 자산이 없을 때의 대체 도형도 확인한다."""
 
 import threading
 
 import pygame
 import pytest
 
-from fakes import FakeClient, MemoryLog, reply, step, target
+from fakes import FakeClient, MemoryLog, move_spec, reply, step, target
 from promptgame.application.interpreter import Interpreter
 from promptgame.application.session import GameSession
+from promptgame.presentation import assets as assets_mod
 from promptgame.presentation import render
 from promptgame.presentation.app import App
 from promptgame.presentation.text_input import TextInput
@@ -60,7 +61,6 @@ def test_enter_during_composition_commits_then_submits():
     ti = TextInput()
     out = feed(ti, [committed("고블린을 베"), editing("어"), key(pygame.K_RETURN)])
     assert out == ["고블린을 베어"] and ti.text == "" and ti.composition == ""
-    # IME가 같은 글자를 뒤늦게 확정해도 다음 입력에 섞이지 않는다
     feed(ti, [committed("어")])
     assert ti.text == ""
 
@@ -79,14 +79,6 @@ def test_escape_clears():
 
 # ---- 창 없는 그리기 ----
 
-@pytest.fixture(scope="module")
-def screen():
-    pygame.init()
-    surface = pygame.display.set_mode(render.WINDOW_SIZE)
-    yield surface
-    pygame.quit()
-
-
 class Instant:
     def __call__(self, fn):
         fn()
@@ -97,55 +89,114 @@ def session_with(*replies, seed=5):
                        plan_display_seconds=0)
 
 
-def draw(screen, session, ti=None):
-    fonts = render.Fonts()
-    render.draw(screen, session, ti or TextInput(), fonts)
+@pytest.fixture
+def app_factory():
+    pygame.init()
+    surface = pygame.Surface(render.WINDOW_SIZE)
+
+    def make(session, **kw):
+        app = App(session, **kw)
+        app.open(headless_surface=surface)
+        return app
+
+    yield make
+    pygame.quit()
 
 
-def test_draw_initial(screen):
-    s = session_with()
-    draw(screen, s)
-    lines = [t for t, _ in render.panel_lines(s)]
-    assert "턴 1 · 시드 5" in lines[0]
-    assert any("가방: 치유 물약 1 · 투척 단검 2" in t for t in lines)
+def pixel_mean(surface, rect):
+    sub = surface.subsurface(rect)
+    total = [0, 0, 0]
+    n = 0
+    for x in range(0, sub.get_width(), 8):
+        for y in range(0, sub.get_height(), 8):
+            c = sub.get_at((x, y))
+            total[0] += c.r
+            total[1] += c.g
+            total[2] += c.b
+            n += 1
+    return tuple(v / n for v in total)
 
 
-def test_draw_accepted_plan_and_results(screen):
-    s = session_with(reply(step("move", move={"toward": target("goblin"), "away_from": None, "direction": None, "cells": 2})))
-    s.submit("고블린 쪽으로 두 칸 가")
-    s.poll()
-    assert s.plan_line.startswith("계획 2/4 AP: ① 이동 2칸 → 고블린 쪽 (2)")
-    ti = TextInput()
-    feed(ti, [committed("화염구"), editing("로")])
-    draw(screen, s, ti)
+def test_draw_initial_uses_backdrop_and_no_grid_lines(app_factory):
+    app = app_factory(session_with())
+    app.frame([])
+    assert not app.assets.missing  # 저장소의 자산이 모두 읽혔다
+    scene = app.screen.subsurface((0, 0, render.SCENE_SIZE[0], render.SCENE_SIZE[1]))
+    whites = 0  # 지면 중앙에 흰 격자선이 없다
+    for x in range(400, 900, 3):
+        for y in range(350, 600, 3):
+            c = scene.get_at((x, y))
+            if c.r > 245 and c.g > 245 and c.b > 245:
+                whites += 1
+    assert whites < 20
 
 
-def test_draw_rejected_plan(screen):
+def test_draw_plan_preview_then_animation_then_idle(app_factory):
+    s = session_with(reply(step("move", move=move_spec(toward=target("goblin"), cells=2))))
+    app = app_factory(s)
+    app.frame([committed("고블린 쪽으로 두 칸 가"), key(pygame.K_RETURN)])
+    assert s.phase == "planned"
+    assert s.plan_line.startswith("계획 2/4 AP")
+    app.frame([])  # 표시 뒤 자동 실행 → 연출 시작
+    assert s.phase == "animating" and s.state.turn == 2
+    assert s.submit("대기") == "busy"  # 연출 중 입력 차단
+    for _ in range(400):
+        app.frame([], 1 / 30)
+        if s.phase == "idle":
+            break
+    assert s.phase == "idle" and app.display.matches(s.state)
+
+
+def test_restart_during_animation_resets_display(app_factory):
+    s = session_with(reply(step("guard")))
+    app = app_factory(s)
+    app.frame([committed("방어"), key(pygame.K_RETURN)])
+    app.frame([])
+    assert s.phase == "animating"
+    app.frame([committed("다시 시작"), key(pygame.K_RETURN)])
+    assert s.phase == "idle" and s.state.turn == 1 and not app.animator.running
+    assert app.display.matches(s.state)
+
+
+def test_draw_rejected_and_outcomes(app_factory):
     s = session_with(reply(step("attack", target=target("goblin"))))
-    s.submit("고블린을 베어")
-    s.poll()
+    app = app_factory(s)
+    app.frame([committed("고블린을 베어"), key(pygame.K_RETURN)])
     assert s.plan_line.startswith("거부: ① 고블린이 옆에 없어요")
-    draw(screen, s)
+    for outcome in ("win", "lose"):
+        s.state.outcome = outcome
+        app.frame([])
+        assert render.result_text(s)[0].startswith("승리" if outcome == "win" else "패배")
 
 
-@pytest.mark.parametrize("outcome, title", [("win", "승리!"), ("lose", "패배")])
-def test_draw_outcomes(screen, outcome, title):
+def test_debug_grid_only_when_enabled(app_factory):
     s = session_with()
-    s.state.outcome = outcome
-    draw(screen, s)
-    assert render.result_text(s)[0].startswith(title)
+    app = app_factory(s)
+    app.frame([])
+    before = pixel_mean(app.screen, (300, 300, 700, 300))
+    app.frame([key(pygame.K_F3)])
+    assert app.debug
+    after = pixel_mean(app.screen, (300, 300, 700, 300))
+    assert after != before
+
+
+def test_missing_assets_fall_back_to_shapes(app_factory, monkeypatch, tmp_path):
+    monkeypatch.setattr(assets_mod, "ASSET_DIR", tmp_path)
+    app = app_factory(session_with())
+    assert "backdrop.png" in app.assets.missing and "units/seorin.png" in app.assets.missing
+    app.frame([])  # 대체 도형으로 그려진다
 
 
 def test_wrap_korean():
     pygame.font.init()
-    font = render.Fonts().small
-    lines = render.wrap(font, "가" * 200, 300)
+    fonts = assets_mod.Fonts()
+    lines = render.wrap(fonts.small, "가" * 200, 300)
     assert len(lines) > 1 and "".join(lines) == "가" * 200
 
 
 # ---- 이벤트 루프 ----
 
-def test_quit_is_handled_while_ai_is_busy(screen):
+def test_quit_is_handled_while_ai_is_busy(app_factory):
     gate = threading.Event()
 
     class Blocking:
@@ -154,8 +205,7 @@ def test_quit_is_handled_while_ai_is_busy(screen):
             return Interpreter(FakeClient(reply(step("wait")))).interpret(sentence, state)
 
     session = GameSession(Blocking(), MemoryLog(), lambda: 1)
-    app = App(session)
-    app.screen, app.fonts, app.running = screen, render.Fonts(), True
+    app = app_factory(session)
     app.frame([committed("대기"), key(pygame.K_RETURN)])
     assert session.busy
     app.frame([committed("대기"), key(pygame.K_RETURN)])  # 처리 중 두 번째 제출
@@ -173,39 +223,3 @@ def test_main_runs_a_few_frames(monkeypatch, tmp_path):
     monkeypatch.setenv("PROMPTGAME_SEED", "3")
     assert main_module.main(max_frames=3) == 0
     assert list(tmp_path.glob("turns-*.jsonl"))
-
-
-@pytest.fixture
-def fresh_screen():
-    pygame.init()  # 앞선 main 실행 테스트가 pygame을 종료했을 수 있다
-    yield pygame.display.set_mode(render.WINDOW_SIZE)
-
-
-def test_long_plan_and_rejection_lines_are_not_cut(fresh_screen, monkeypatch):
-    drawn = []
-    original = render._blit
-
-    def capture(surface, font, text, pos, color=render.TEXT):
-        drawn.append(text)
-        return original(surface, font, text, pos, color)
-
-    monkeypatch.setattr(render, "_blit", capture)
-    s = session_with()
-    s.plan_line = ("거부: AP 9 필요 (① 머리 조준 강타 → 오크 4, ② 머리 조준 강타 → 고블린 4, ③ 단검 투척 → 고블린 1), "
-                   "한 턴에 4까지예요. 'n칸 다가가'처럼 칸 수를 적으면 이번 턴에 3칸까지 갈 수 있어요." * 2)
-    fonts = render.Fonts()
-    render.draw(fresh_screen, s, TextInput(), fonts)
-    lines = render.wrap(fonts.normal, s.plan_line, render.WINDOW_SIZE[0] - 32)
-    assert len(lines) > 2
-    start = drawn.index(lines[0])
-    assert drawn[start:start + len(lines)] == lines
-
-
-def test_app_marks_plan_displayed_then_executes(fresh_screen):
-    s = session_with(reply(step("guard")))
-    app = App(s)
-    app.screen, app.fonts, app.running = fresh_screen, render.Fonts(), True
-    app.frame([committed("방어"), key(pygame.K_RETURN)])  # 해석 → 계획 표시
-    assert s.phase == "planned" and s.state.turn == 1
-    app.frame([])  # 표시된 뒤 다음 프레임에서 자동 실행
-    assert s.state.turn == 2 and s.phase == "idle"

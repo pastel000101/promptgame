@@ -55,10 +55,11 @@ def _check_win(state: GameState) -> bool:
 
 
 def _hit_enemy(state: GameState, target: Unit, chance: int, base: int, multiplier: float, bonus: int,
-               aim: str, burn: bool, rng: random.Random, prefix: str) -> Event:
+               aim: str, burn: bool, rng: random.Random, prefix: str, act: str = "attack", power: str = "normal") -> Event:
     dice = roll(rng)
     hit = dice <= chance
-    data = {"type": "player_attack", "target": target.uid, "chance": chance, "dice": dice, "hit": hit}
+    data = {"type": "player_attack", "act": act, "aim": aim, "power": power, "target": target.uid,
+            "chance": chance, "dice": dice, "hit": hit, "attacker_pos": list(state.player.pos), "target_pos": list(target.pos)}
     text = f"{prefix} → {name(target.kind)}: {roll_text(chance, dice, hit)}"
     state.last_attacked = target.uid
     if not hit:
@@ -98,36 +99,37 @@ def _apply_step(state: GameState, check: StepCheck, rng: random.Random) -> list[
     if st.act in ("move", "dash"):
         verb = "돌진" if st.act == "dash" else "이동"
         if not check.path:
-            return [Event(f"{head} {verb}: 이미 그 자리예요", {"type": "move", "from": list(start), "to": list(start)})]
+            return [Event(f"{head} {verb}: 이미 그 자리예요", {"type": "move", "act": st.act, "from": list(start), "to": list(start), "path": []})]
         return [Event(f"{head} {verb} {pos_text(start)}→{pos_text(state.player.pos)}",
-                      {"type": "move", "from": list(start), "to": list(state.player.pos), "ap": check.ap})]
+                      {"type": "move", "act": st.act, "from": list(start), "to": list(state.player.pos), "ap": check.ap,
+                       "path": [list(p) for p in check.path]})]
     if st.act == "attack":
         target = state.enemy(check.target)
         mult = level.HEAD_DAMAGE_MULTIPLIER if st.aim == "head" else 1
         bonus = level.STRONG_DAMAGE_BONUS if st.power == "strong" else 0
         return [_hit_enemy(state, target, check.chances[target.uid], state.player.weapon_damage, mult, bonus,
-                           st.aim, False, rng, f"{head} {check.label.split(' → ')[0]}")]
+                           st.aim, False, rng, f"{head} {check.label.split(' → ')[0]}", "attack", st.power)]
     if st.act == "skill":
         events = []
         for uid, chance in check.chances.items():
             target = state.enemy(uid)
-            events.append(_hit_enemy(state, target, chance, state.player.weapon_damage, 1, 0, "none", False, rng, f"{head} 돌려베기"))
+            events.append(_hit_enemy(state, target, chance, state.player.weapon_damage, 1, 0, "none", False, rng, f"{head} 돌려베기", "skill"))
         return events
     if st.act == "cast":
         target = state.enemy(check.target)
-        ev = _hit_enemy(state, target, check.chances[target.uid], level.FIREBALL_DAMAGE, 1, 0, "none", True, rng, f"{head} 화염구")
+        ev = _hit_enemy(state, target, check.chances[target.uid], level.FIREBALL_DAMAGE, 1, 0, "none", True, rng, f"{head} 화염구", "cast")
         return [ev]
     if st.act == "use_item" and st.item == "potion":
         before = state.player.hp
         state.player.hp = min(state.player.max_hp, before + level.POTION_HEAL)
         healed = state.player.hp - before
         return [Event(f"{head} 치유 물약: 체력 +{healed} ({before}→{state.player.hp}) · 남은 물약 {state.potions}",
-                      {"type": "potion", "hp_before": before, "hp_after": state.player.hp})]
+                      {"type": "potion", "healed": healed, "hp_before": before, "hp_after": state.player.hp})]
     if st.act == "use_item":
         target = state.enemy(check.target)
         mult = level.HEAD_DAMAGE_MULTIPLIER if st.aim == "head" else 1
         prefix = f"{head} {AIM_NAMES[st.aim] + ' 조준 ' if st.aim != 'none' else ''}단검 투척"
-        ev = _hit_enemy(state, target, check.chances[target.uid], level.KNIFE_DAMAGE, mult, 0, st.aim, False, rng, prefix)
+        ev = _hit_enemy(state, target, check.chances[target.uid], level.KNIFE_DAMAGE, mult, 0, st.aim, False, rng, prefix, "use_item")
         ev.text += f" · 남은 단검 {state.knives}"
         return [ev]
     if st.act == "guard":
@@ -166,16 +168,19 @@ def _move_enemy(state: GameState, enemy: Unit) -> Event | None:
         return None
     points = enemy.move_points
     start = enemy.pos
+    walked = []
     for p in path:
         cost = level.MOVE_COST[state.terrain(p)]
         if cost > points:
             break
         points -= cost
         enemy.pos = p
+        walked.append(p)
     if enemy.pos == start:
         return None
     return Event(f"적 턴: {name(enemy.kind)} 이동 {pos_text(start)}→{pos_text(enemy.pos)}",
-                 {"type": "enemy_move", "enemy": enemy.uid, "from": list(start), "to": list(enemy.pos)})
+                 {"type": "enemy_move", "enemy": enemy.uid, "from": list(start), "to": list(enemy.pos),
+                  "path": [list(p) for p in walked]})
 
 
 def _enemy_attack(state: GameState, enemy: Unit, rng: random.Random) -> Event:
@@ -183,7 +188,8 @@ def _enemy_attack(state: GameState, enemy: Unit, rng: random.Random) -> Event:
     dice = roll(rng)
     hit = dice <= chance
     text = f"적 턴: {name(enemy.kind)} 공격 → 용병: {roll_text(chance, dice, hit)}"
-    data = {"type": "enemy_attack", "enemy": enemy.uid, "chance": chance, "dice": dice, "hit": hit}
+    data = {"type": "enemy_attack", "enemy": enemy.uid, "chance": chance, "dice": dice, "hit": hit,
+            "attacker_pos": list(enemy.pos), "target_pos": list(state.player.pos)}
     if hit:
         weapon = enemy.weapon_damage
         if enemy.statuses.get("arm_injury"):
