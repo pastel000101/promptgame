@@ -162,26 +162,33 @@ class Renderer:
             du = ds.units[uid]
             if du.lying or rect.width == 0:
                 continue
-            covered = 0
+            occluders = []
             for other, (ogy, orect) in rects.items():
-                if other == uid or ogy <= gy:
+                if other == uid or ogy <= gy or ds.units[other].lying:
                     continue
                 inter = rect.clip(orect)
-                covered = max(covered, inter.width * inter.height)
-            if covered < rect.width * rect.height * 0.3:
+                if inter.width * inter.height >= rect.width * rect.height * 0.3:
+                    occluders.append(other)
+            if not occluders or du.tilt:
                 continue
             img, _ = self._unit_sprite(du)
-            if du.tilt:
-                continue
             mask = pygame.mask.from_surface(img, 100)
             color = (120, 190, 255) if du.kind == "player" else (255, 120, 90)
             outline = mask.outline(4)
-            if len(outline) > 2:
-                pts = [(rect.x + x, rect.y + y) for x, y in outline]
-                layer = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-                pygame.draw.polygon(layer, (*color, 70), pts)
-                pygame.draw.lines(layer, (*color, 230), True, pts, 2)
-                surface.blit(layer, (0, 0))
+            if len(outline) <= 2:
+                continue
+            pts = [(rect.x + x, rect.y + y) for x, y in outline]
+            layer = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+            pygame.draw.polygon(layer, (*color, 60), pts)
+            pygame.draw.lines(layer, (*color, 220), True, pts, 2)
+            # 가린 캐릭터의 실제 픽셀이 있는 곳에만 윤곽이 보이게 자른다
+            clip = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+            for other in occluders:
+                oimg, _ = self._unit_sprite(ds.units[other])
+                omask = pygame.mask.from_surface(oimg, 100).to_surface(setcolor=(255, 255, 255, 255), unsetcolor=(0, 0, 0, 0))
+                clip.blit(omask, rects[other][1])
+            layer.blit(clip, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+            surface.blit(layer, (0, 0))
 
     def draw_unit_overlay(self, surface, du: DisplayUnit, ds: DisplayState, fx) -> None:
         """체력 막대·상태 배지·방어 고리. 모든 캐릭터를 그린 뒤에 그린다."""

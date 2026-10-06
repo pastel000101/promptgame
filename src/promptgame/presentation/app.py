@@ -36,7 +36,7 @@ class App:
             pygame.display.set_caption("promptgame — 문장으로 싸우는 턴제 전투")
         else:
             self.screen = headless_surface
-        self.assets = Assets(render.SCENE_SIZE)
+        self.assets = Assets(render.BACKDROP_SIZE)  # 배경은 1280×720, 장면은 위 40px을 잘라 1280×680
         self.renderer = render.Renderer(self.assets, self.cam, self.debug)
         self.display = DisplayState.from_game(self.session.state)
         self.animator = Animator(self.display, self.cam)
